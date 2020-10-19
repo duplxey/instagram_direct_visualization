@@ -62,6 +62,24 @@
                 "#E68F64",
             ];
 
+            fetch("get/")
+              .then(res => res.json())
+              .then((result) => {
+                  for (let i = result.length-1; i >= 0; i--) {
+                      let conversation = result[i]['conversation'];
+                      for (let j = conversation.length-1; j >= 0; j--) {
+                          let message = conversation[j];
+                          console.log(message.sender + " -> " + message.text);
+                      }
+                  }
+                  console.log(result);
+                },
+                (error) => {
+                  console.log("Failed to fetch the data!");
+                  console.log(error);
+                }
+              );
+
             {#for (let i = 0; i < color_palette.length; i++) {#}
             {#    document.write(`#}
             {#        <div class="badge" role="alert" style="background: ${color_palette[i]}; color: white;">#}
