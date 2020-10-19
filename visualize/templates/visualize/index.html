@@ -62,6 +62,9 @@
                 "#E68F64",
             ];
 
+            let messageMap = new Map([]);
+            let messageAmountMap = new Map([]);
+
             fetch("get/")
               .then(res => res.json())
               .then((result) => {
@@ -69,10 +72,41 @@
                       let conversation = result[i]['conversation'];
                       for (let j = conversation.length-1; j >= 0; j--) {
                           let message = conversation[j];
+                          let created_at = message['created_at'];
+                          let sender = message['sender'];
+                          let text = message['text'];
+
+                          let date = created_at.substring(0, 7);
+
+                          if (!messageAmountMap.has(date)) {
+                              messageAmountMap.set(date, 1);
+                          } else {
+                              messageAmountMap.set(date, messageAmountMap.get(date)+1);
+                          }
+
+                          if (!messageMap.has(sender)) {
+                              let a = {};
+                              a[date] = {text};
+                              messageMap.set(sender, a);
+                          } else {
+                              let current = messageMap.get(sender);
+                              if (current[date]) {
+                                  current[date] = Array.from(current[date]).concat(text);
+                              } else {
+                                  current[date] = {
+                                      ...current[date],
+                                      text,
+                                  };
+                              }
+                          }
                           console.log(message.sender + " -> " + message.text);
                       }
                   }
                   console.log(result);
+                  console.log(messageMap);
+                  console.log(messageAmountMap);
+
+
                 },
                 (error) => {
                   console.log("Failed to fetch the data!");
