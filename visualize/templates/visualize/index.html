@@ -70,7 +70,9 @@
             let messageMap = new Map([]);
             let messageAmountMap = new Map([]);
             let messageTimesMap = new Map([]);
-            let messageLengthMap = new Map([]);
+            let messageLengthBufferMap = new Map([]);
+            let messageLengthAverageMap = new Map([]);
+
 
             for (let i = 0; i < times.length; i++) {
                 messageTimesMap.set(times[i], 0);
@@ -153,7 +155,7 @@
                               a[month] = {text};
                               messageMap.set(sender, a);
                               messageAmountMap.set(sender, 1);
-                              messageLengthMap.set(sender, textLength);
+                              messageLengthBufferMap.set(sender, textLength);
                           } else {
                               let current = messageMap.get(sender);
                               if (current[month]) {
@@ -165,7 +167,7 @@
                                   };
                               }
                               messageAmountMap.set(sender, messageAmountMap.has(sender) ? messageAmountMap.get(sender) + 1 : 1);
-                              messageLengthMap.set(sender, messageLengthMap.has(sender) ? messageLengthMap.get(sender) + textLength : textLength);
+                              messageLengthBufferMap.set(sender, messageLengthBufferMap.has(sender) ? messageLengthBufferMap.get(sender) + textLength : textLength);
                           }
                           console.log(message.sender + " -> " + message.text);
                       }
@@ -185,16 +187,45 @@
                   {#    messageAmountMap.set(key, b);#}
                   {# }); #}
 
-                  console.log(messageAmountMap);
-
-
+                  console.log("==================================================");
+                  console.log("months");
                   let months = Object.keys(messageMap.values().next().value);
                   console.log(months);
 
+                  console.log("==================================================");
+                  console.log("messageTimesMap");
                   console.log(messageTimesMap);
 
-                  console.log(messageLengthMap);
+                  console.log("==================================================");
+                  console.log("messageAmountMap");
+                  console.log(messageAmountMap);
 
+                  console.log("==================================================");
+                  console.log("messageLengthBufferMap");
+                  console.log(messageLengthBufferMap);
+
+                  console.log("==================================================");
+                  console.log("messageLengthAverageMap");
+                  let allMessages = 0;
+                  for (let [key, value] of messageLengthBufferMap.entries()) {
+                      messageLengthAverageMap.set(key, value / messageAmountMap.get(key));
+                      allMessages += messageAmountMap.get(key);
+                  }
+                  console.log(messageLengthAverageMap);
+
+                  // Fill in the data
+                  let keys = Array.from(messageLengthBufferMap.keys());
+                  document.getElementById("generalDump").innerHTML = `All messages: ${allMessages} (100%)<br>`;
+
+                  for (let i = 0; i < keys.length; i++) {
+                      let key = keys[i];
+                      document.getElementById("generalDump").innerHTML +=
+                          `${key}'s messages: ${messageAmountMap.get(key)} (${(messageAmountMap.get(key)*100/allMessages).toFixed(2)}%)<br>`;
+                  }
+
+                    {##}
+                    {#Your messages: y (share %)<br>#}
+                    {#Their messages: z (share %)<br>`;#}
 
                   // =======================================================================================
                   // Draw all the graphs
@@ -204,10 +235,10 @@
                     var generalChart = new Chart(generalCtx, {
                         type: 'doughnut',
                         data: {
-                            labels: ['You', 'Them'],
+                            labels: Array.from(messageAmountMap.keys()),
                             datasets: [{
                                 label: '# of Votes',
-                                data: [55, 25],
+                                data: Array.from(messageAmountMap.values()),
                                 backgroundColor: [
                                     color_palette[0],
                                     color_palette[1],
@@ -492,13 +523,9 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">General</h5>
-                            <p class="card-text">
-                                All messages: x (100%)<br>
-                                Your messages: y (share %)<br>
-                                Their messages: z (share %)<br>
-                                <hr>
-                                <canvas id="generalChart" class="chart" width="400" height="200"></canvas>
-                            </p>
+                            <p class="card-text" id="generalDump"></p>
+                            <hr>
+                            <canvas id="generalChart" class="chart" width="400" height="200"></canvas>
                         </div>
                     </div>
                     <div class="card">
