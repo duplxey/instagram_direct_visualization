@@ -54,6 +54,13 @@
             </div>
         </nav>
         <script>
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            let dictionarySkip = getRandomInt(3, 8);
+
             const color_palette = [
                 "#8ABBFE",
                 "#BCE4A6",
@@ -182,7 +189,7 @@
                               let dictionary = senderDictionary.get(sender);
                               let word = split[w];
 
-                              if (word != null && word.length > 4) {
+                              if (word != null && word.length > dictionarySkip) {
                                   dictionary.set(word, dictionary.has(word) ? dictionary.get(word) + 1 : 1);
                               }
 
@@ -540,12 +547,6 @@
                         }
                     });
 
-                    function getRandomInt(min, max) {
-                        min = Math.ceil(min);
-                        max = Math.floor(max);
-                        return Math.floor(Math.random() * (max - min + 1)) + min;
-                    }
-
                     let mostUsedDataSet = [];
 
                     console.log("==================================================");
@@ -564,7 +565,7 @@
                               {
                                 label: dic1,
                                 data: [
-                                    {x: getRandomInt(0, 100), y: getRandomInt(0, 100), r: dic2/5},
+                                    {x: getRandomInt(0, 100), y: getRandomInt(0, 100), r: dic2/10*dictionarySkip/1.2},
                                 ],
                                 backgroundColor: [
                                     key.startsWith("g") ? color_palette[0] : color_palette[1],
@@ -704,10 +705,11 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Most used words [longer than 4 chars]</h5>
+                    <h5 class="card-title">Most used words [longer than <span id="dictionarySkip"></span> chars]</h5>
                     <p class="card-text">
                         <canvas id="mostUsedGraph" width="400" height="200"></canvas>
                     </p>
+                    <script>document.getElementById("dictionarySkip").innerHTML = dictionarySkip;</script>
                 </div>
             </div>
         </div>
