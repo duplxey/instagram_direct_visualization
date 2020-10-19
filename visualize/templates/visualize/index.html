@@ -182,7 +182,9 @@
                               let dictionary = senderDictionary.get(sender);
                               let word = split[w];
 
-                              dictionary.set(word, dictionary.has(word) ? dictionary.get(word) + 1 : 1);
+                              if (word != null && word.length > 4) {
+                                  dictionary.set(word, dictionary.has(word) ? dictionary.get(word) + 1 : 1);
+                              }
 
                               if (emoticonsMap.has(word)) {
                                   emoticonsMap.set(word, emoticonsMap.get(word) + 1);
@@ -538,74 +540,47 @@
                         }
                     });
 
-                    var yourMostUsedWordsCtx = document.getElementById('yourMostUsedWordsChart').getContext('2d');
-                    var yourMostUsedWordsChart = new Chart(yourMostUsedWordsCtx, {
-                        type: 'bubble',
-                        data: {
-                            datasets: [{
-                                label: ["word1"],
-                                data: [
-                                    {x: 0, y: 2, r: 10},
-                                ],
-                                backgroundColor: [
-                                    color_palette[0],
-                                ],
-                            },
-                            {
-                                label: ["word2"],
-                                data: [
-                                    {x: 1, y: 2, r: 15},
-                                ],
-                                backgroundColor: [
-                                    color_palette[0],
-                                ],
-                            }]
-                        },
-                        options: {
-                            legend: {
-                                display: false,
-                            },
-                            scales: {
-                                xAxes: [{
-                                    display: false,
-                                }],
-                                yAxes: [{
-                                    display: false,
-                                }]
-                            },
-                            layout: {
-                                padding: {
-                                    left: 100,
-                                    right: 100,
-                                    top: 50,
-                                    bottom: 50
-                                }
-                            }
-                        }
-                    });
+                    function getRandomInt(min, max) {
+                        min = Math.ceil(min);
+                        max = Math.floor(max);
+                        return Math.floor(Math.random() * (max - min + 1)) + min;
+                    }
 
-                    var theirMostUsedWordsCtx = document.getElementById('theirMostUsedWordsChart').getContext('2d');
-                    var theirMostUsedWordsChart = new Chart(theirMostUsedWordsCtx, {
+                    let mostUsedDataSet = [];
+
+                    console.log("==================================================");
+                    console.log("senderDictionary");
+                      // sort the dictionary for every key
+                      for (let [key, value] of senderDictionary.entries()) {
+                          let dictionary = senderDictionary.get(key);
+                          let random = getRandomInt(15, 45);
+                          let x = 0;
+                          for (let [dic1, dic2] of dictionary.entries()) {
+                              if (x > random) {
+                                  break;
+                              }
+                              mostUsedDataSet = [
+                              ...mostUsedDataSet,
+                              {
+                                label: dic1,
+                                data: [
+                                    {x: getRandomInt(0, 100), y: getRandomInt(0, 100), r: dic2/5},
+                                ],
+                                backgroundColor: [
+                                    key.startsWith("g") ? color_palette[0] : color_palette[1],
+                                ],
+                                }
+                              ]
+                              x += getRandomInt(1, 3);
+                          }
+                      }
+                      console.log(senderDictionary);
+
+                    var mostUsedCtx = document.getElementById('mostUsedGraph').getContext('2d');
+                    var mostUsedGraph = new Chart(mostUsedCtx, {
                         type: 'bubble',
                         data: {
-                            datasets: [{
-                                label: ["word1"],
-                                data: [
-                                    {x: 0, y: 2, r: 10},
-                                ],
-                                backgroundColor: [
-                                    color_palette[0],
-                                ],
-                            },
-                            {
-                                label: ["word2"],
-                                data: [
-                                    {x: 1, y: 2, r: 15},
-                                ],
-                                backgroundColor: [
-                                    color_palette[0],
-                                ],
-                            }]
+                            datasets: mostUsedDataSet
                         },
                         options: {
                             legend: {
@@ -729,17 +704,9 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Your most used words</h5>
+                    <h5 class="card-title">Most used words [longer than 4 chars]</h5>
                     <p class="card-text">
-                        <canvas id="yourMostUsedWordsChart" width="400" height="200"></canvas>
-                    </p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Their most used words</h5>
-                    <p class="card-text">
-                        <canvas id="theirMostUsedWordsChart" width="400" height="200"></canvas>
+                        <canvas id="mostUsedGraph" width="400" height="200"></canvas>
                     </p>
                 </div>
             </div>
