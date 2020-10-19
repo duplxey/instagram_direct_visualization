@@ -86,6 +86,7 @@
                 ["xD", 0],
             ]);
             let emojisMap = new Map([]);
+            let senderDictionary = new Map([]);
 
             for (let i = 0; i < times.length; i++) {
                 messageTimesMap.set(times[i], 0);
@@ -172,9 +173,17 @@
 
                           messageTimesMap.set(get_offset_time(hour), messageTimesMap.has(get_offset_time(hour)) ? messageTimesMap.get(get_offset_time(hour)) + 1 : 1);
 
+                          if (!senderDictionary.has(sender)) {
+                              senderDictionary.set(sender, new Map([]));
+                          }
+
                           let split = text == null ? [] : text.split(" ");
                           for (let w = 0; w < textWords; w++) {
+                              let dictionary = senderDictionary.get(sender);
                               let word = split[w];
+
+                              dictionary.set(word, dictionary.has(word) ? dictionary.get(word) + 1 : 1);
+
                               if (emoticonsMap.has(word)) {
                                   emoticonsMap.set(word, emoticonsMap.get(word) + 1);
                               }
@@ -260,6 +269,15 @@
                       emoticonsDump.innerHTML += `<li>${key} (${value})</li>`
                   }
 
+                  console.log("==================================================");
+                  console.log("senderDictionary");
+                  // sort the dictionary for every key
+                  for (let [key, value] of senderDictionary.entries()) {
+                      let dictionary = senderDictionary.get(key);
+                      senderDictionary.set(key, new Map([...dictionary.entries()].sort((a, b) => b[1] - a[1])));
+                  }
+                  console.log(senderDictionary);
+
                   // Fill in the data
                   let keys = Array.from(messageLengthBufferMap.keys());
 
@@ -288,8 +306,6 @@
                       document.getElementById("heartedDump").innerHTML +=
                           `${key}'s likes: ${messageLikesMap.get(key)} (${(messageLikesMap.get(key)*100/allLikes).toFixed(2)}%)<br>`;
                   }
-
-                  console.log(messageLikesMap);
 
                     {##}
                     {#Your messages: y (share %)<br>#}
