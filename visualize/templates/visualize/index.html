@@ -74,6 +74,16 @@
             let messageWordsBufferMap = new Map([]);
             let messageLengthAverageMap = new Map([]);
             let messageWordsAverageMap = new Map([]);
+            let emoticonsMap = new Map([
+                [":)", 0],
+                [":(", 0],
+                ["(:", 0],
+                [":/", 0],
+                [":P", 0],
+                [":D", 0],
+                ["xD", 0],
+            ]);
+            let emojisMap = new Map([]);
 
             for (let i = 0; i < times.length; i++) {
                 messageTimesMap.set(times[i], 0);
@@ -152,6 +162,14 @@
 
                           messageTimesMap.set(get_offset_time(hour), messageTimesMap.has(get_offset_time(hour)) ? messageTimesMap.get(get_offset_time(hour)) + 1 : 1);
 
+                          let split = text == null ? [] : text.split(" ");
+                          for (let w = 0; w < textWords; w++) {
+                              let word = split[w];
+                              if (emoticonsMap.has(word)) {
+                                  emoticonsMap.set(word, emoticonsMap.get(word) + 1);
+                              }
+                          }
+
                           if (!messageMap.has(sender)) {
                               let a = {};
                               a[month] = {text};
@@ -224,6 +242,15 @@
                   }
                   console.log(messageWordsAverageMap);
 
+                  console.log("==================================================");
+                  console.log("emoticons");
+                  let emoticonsDump = document.getElementById("emoticonsDump");
+                  for (let [key, value] of emoticonsMap.entries()) {
+                      console.log(key + " -> " + value);
+                      emoticonsDump.innerHTML += `<li>${key} (${value})</li>`
+                  }
+                  console.log(messageWordsAverageMap);
+
                   // Fill in the data
                   let keys = Array.from(messageLengthBufferMap.keys());
 
@@ -293,6 +320,15 @@
                             },
                         },
                     });
+
+                    // TODO: complete me
+                    {#let messageDataSets = [];#}
+                    {#for (let i = 0; i < keys.length; i++) {#}
+                    {#    messageDataSets.push({#}
+                    {#        label: '# of ' + key + ' messages',#}
+                    {#        data: [messageAmountMap.]#}
+                    {#    });#}
+                    {# }#}
 
                     var messageCtx = document.getElementById('messageChart').getContext('2d');
                     var messageChart = new Chart(messageCtx, {
@@ -580,7 +616,7 @@
                 <div class="col-12 col-md-7">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Messages count over time (months)</h5>
+                            <h5 class="card-title">Message count over time (months)</h5>
                             <p class="card-text">
                                 <canvas id="messageChart" width="400" height="200"></canvas>
                             </p>
@@ -650,12 +686,9 @@
                 <div class="col-12 col-md-7">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Emojis / emoticons share</h5>
+                            <h5 class="card-title">Emoticons share</h5>
                             <div class="card-text">
-                                <ul>
-                                    <li>1x :smilley:</li>
-                                    <li>1x :smilley:</li>
-                                    <li>1x :smilley:</li>
+                                <ul id="emoticonsDump">
                                 </ul>
                             </div>
                         </div>
