@@ -53,6 +53,23 @@
            </div>
             </div>
         </nav>
+        <script>
+            const color_palette = [
+                "#FFFD98",
+                "#BCE4A6",
+                "#8ABBFE",
+                "#CF89AB",
+                "#E68F64",
+            ];
+
+            {#for (let i = 0; i < color_palette.length; i++) {#}
+            {#    document.write(`#}
+            {#        <div class="badge" role="alert" style="background: ${color_palette[i]}; color: white;">#}
+            {#          A simple primary alert—check it out!#}
+            {#        </div>#}
+            {#    `);#}
+            {# } #}
+        </script>
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-5">
