@@ -62,8 +62,18 @@
                 "#E68F64",
             ];
 
+            let times = [
+              "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
+              "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"
+            ];
+
             let messageMap = new Map([]);
             let messageAmountMap = new Map([]);
+            let messageTimesMap = new Map([]);
+
+            for (let i = 0; i < times.length; i++) {
+                messageTimesMap.set(times[i], 0);
+            }
 
             fetch("get/")
               .then(res => res.json())
@@ -76,19 +86,26 @@
                           let sender = message['sender'];
                           let text = message['text'];
 
-                          let date = created_at.substring(0, 7);
+                          let month = created_at.substring(0, 7);
+                          let hour = created_at.substring(11, 13);
+
+                          {#let my_time = new Date(created_at).toLocaleString("en-US", {timeZone: "Europe/Berlin"});#}
+
+                          console.log(created_at);
+
+                          messageTimesMap.set(hour, messageTimesMap.has(hour) ? messageTimesMap.get(hour) + 1 : 1);
 
                           if (!messageMap.has(sender)) {
                               let a = {};
-                              a[date] = {text};
+                              a[month] = {text};
                               messageMap.set(sender, a);
                           } else {
                               let current = messageMap.get(sender);
-                              if (current[date]) {
-                                  current[date] = Array.from(current[date]).concat(text);
+                              if (current[month]) {
+                                  current[month] = Array.from(current[month]).concat(text);
                               } else {
-                                  current[date] = {
-                                      ...current[date],
+                                  current[month] = {
+                                      ...current[month],
                                       text,
                                   };
                               }
@@ -115,14 +132,15 @@
 
 
                   let months = Object.keys(messageMap.values().next().value);
-                  let times = [
-                      "12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am",
-                      "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"
-                  ];
                   console.log(months);
 
+                  console.log(messageTimesMap);
 
+
+                  // =======================================================================================
                   // Draw all the graphs
+                  // =======================================================================================
+
                   var generalCtx = document.getElementById('generalChart').getContext('2d');
                     var generalChart = new Chart(generalCtx, {
                         type: 'doughnut',
@@ -151,11 +169,10 @@
                         data: {
                             labels: ['You', 'Them'],
                             datasets: [{
-                                label: '# of Votes',
                                 data: [55, 25],
                                 backgroundColor: [
-                                    color_palette[0],
-                                    color_palette[1],
+                                    color_palette[3],
+                                    color_palette[4],
                                 ],
                                 borderWidth: 5,
                             }]
