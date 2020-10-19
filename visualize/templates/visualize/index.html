@@ -55,9 +55,9 @@
         </nav>
         <script>
             const color_palette = [
-                "#FFFD98",
-                "#BCE4A6",
                 "#8ABBFE",
+                "#BCE4A6",
+                "#FFFD98",
                 "#CF89AB",
                 "#E68F64",
             ];
@@ -77,12 +77,6 @@
                           let text = message['text'];
 
                           let date = created_at.substring(0, 7);
-
-                          if (!messageAmountMap.has(date)) {
-                              messageAmountMap.set(date, 1);
-                          } else {
-                              messageAmountMap.set(date, messageAmountMap.get(date)+1);
-                          }
 
                           if (!messageMap.has(sender)) {
                               let a = {};
@@ -104,8 +98,310 @@
                   }
                   console.log(result);
                   console.log(messageMap);
+
+                  {#messageMap.forEach((key, value) => {#}
+                  {#    for (let i = 0; i < value.length; i++) {#}
+                  {#        let date = value[i];#}
+                  {#        let b = {};#}
+                  {#        b[]#}
+                  {#    }#}
+                  {##}
+                  {#    let b = {};#}
+                  {#    b[]#}
+                  {#    messageAmountMap.set(key, b);#}
+                  {# }); #}
+
                   console.log(messageAmountMap);
 
+
+                  let months = Object.keys(messageMap.values().next().value);
+                  let times = [
+                      "12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am",
+                      "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"
+                  ];
+                  console.log(months);
+
+
+                  // Draw all the graphs
+                  var generalCtx = document.getElementById('generalChart').getContext('2d');
+                    var generalChart = new Chart(generalCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['You', 'Them'],
+                            datasets: [{
+                                label: '# of Votes',
+                                data: [55, 25],
+                                backgroundColor: [
+                                    color_palette[0],
+                                    color_palette[1],
+                                ],
+                                borderWidth: 5,
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                    });
+
+                    var heartedCtx = document.getElementById('heartedChart').getContext('2d');
+                    var heartedChart = new Chart(heartedCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['You', 'Them'],
+                            datasets: [{
+                                label: '# of Votes',
+                                data: [55, 25],
+                                backgroundColor: [
+                                    color_palette[0],
+                                    color_palette[1],
+                                ],
+                                borderWidth: 5,
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                    });
+
+                    var messageCtx = document.getElementById('messageChart').getContext('2d');
+                    var messageChart = new Chart(messageCtx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                label: '# of your messages',
+                                data: [12, 19, 3, 5, 2, 3],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                                borderWidth: 1
+                            },
+                            {
+                                label: '# of their messages',
+                                data: [12, 3, 3, 5, 2, 3],
+                                backgroundColor: [
+                                    color_palette[1],
+                                ],
+                                borderWidth: 1
+                            },
+                            {
+                                label: '# of all messages',
+                                data: [12, 3, 3, 5, 2, 5],
+                                backgroundColor: [
+                                    color_palette[2],
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+
+                    var messageLengthCtx = document.getElementById('messageLengthChart').getContext('2d');
+                    var messageLengthChart = new Chart(messageLengthCtx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                label: '# of your messages',
+                                data: [12, 19, 3, 5, 2, 3],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                                borderWidth: 1
+                            },
+                            {
+                                label: '# of their messages',
+                                data: [12, 3, 3, 5, 2, 3],
+                                backgroundColor: [
+                                    color_palette[1],
+                                ],
+                                borderWidth: 1
+                            },
+                            {
+                                label: '# of all messages',
+                                data: [12, 3, 3, 5, 2, 5],
+                                backgroundColor: [
+                                    color_palette[2],
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+
+                    var messageLengthBarCtx = document.getElementById('messageLengthBar').getContext('2d');
+                    var messageLengthBar = new Chart(messageLengthBarCtx, {
+                       type: "horizontalBar",
+                       data: {
+                          labels: [
+                             "You",
+                             "Them",
+                          ],
+                          datasets: [
+                             {
+                                label: "My First Dataset",
+                                data: [
+                                   65,
+                                   59,
+                                ],
+                                fill: false,
+                                backgroundColor: [
+                                   color_palette[0],
+                                   color_palette[1],
+                                ],
+                                borderWidth: 1
+                             }
+                          ]
+                       },
+                       options: {
+                          scales: {
+                             xAxes: [
+                                {
+                                   ticks: {
+                                      beginAtZero: true
+                                   }
+                                }
+                             ]
+                          }
+                       }
+                    });
+
+                    var messageTimesCtx = document.getElementById('messageTimesChart').getContext('2d');
+                    var messageTimesChart = new Chart(messageTimesCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: times,
+                            datasets: [{
+                                label: '# of your messages',
+                                data: [12, 19, 3, 5, 2, 3],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+
+                    var yourMostUsedWordsCtx = document.getElementById('yourMostUsedWordsChart').getContext('2d');
+                    var yourMostUsedWordsChart = new Chart(yourMostUsedWordsCtx, {
+                        type: 'bubble',
+                        data: {
+                            datasets: [{
+                                label: ["word1"],
+                                data: [
+                                    {x: 0, y: 2, r: 10},
+                                ],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                            },
+                            {
+                                label: ["word2"],
+                                data: [
+                                    {x: 1, y: 2, r: 15},
+                                ],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                display: false,
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: false,
+                                }],
+                                yAxes: [{
+                                    display: false,
+                                }]
+                            },
+                            layout: {
+                                padding: {
+                                    left: 50,
+                                    right: 50,
+                                    top: 50,
+                                    bottom: 50
+                                }
+                            }
+                        }
+                    });
+
+                    var theirMostUsedWordsCtx = document.getElementById('theirMostUsedWordsChart').getContext('2d');
+                    var theirMostUsedWordsChart = new Chart(theirMostUsedWordsCtx, {
+                        type: 'bubble',
+                        data: {
+                            datasets: [{
+                                label: ["word1"],
+                                data: [
+                                    {x: 0, y: 2, r: 10},
+                                ],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                            },
+                            {
+                                label: ["word2"],
+                                data: [
+                                    {x: 1, y: 2, r: 15},
+                                ],
+                                backgroundColor: [
+                                    color_palette[0],
+                                ],
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                display: false,
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: false,
+                                }],
+                                yAxes: [{
+                                    display: false,
+                                }]
+                            },
+                            layout: {
+                                padding: {
+                                    left: 50,
+                                    right: 50,
+                                    top: 50,
+                                    bottom: 50
+                                }
+                            }
+                        }
+                    });
 
                 },
                 (error) => {
@@ -113,14 +409,6 @@
                   console.log(error);
                 }
               );
-
-            {#for (let i = 0; i < color_palette.length; i++) {#}
-            {#    document.write(`#}
-            {#        <div class="badge" role="alert" style="background: ${color_palette[i]}; color: white;">#}
-            {#          A simple primary alert—check it out!#}
-            {#        </div>#}
-            {#    `);#}
-            {# } #}
         </script>
         <div class="container">
             <div class="row">
@@ -132,44 +420,8 @@
                                 All messages: x (100%)<br>
                                 Your messages: y (share %)<br>
                                 Their messages: z (share %)<br>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <canvas id="myChart2" class="chart" width="400" height="200"></canvas>
-                            <script>
-                                var ctx = document.getElementById('myChart2').getContext('2d');
-                                var myChart = new Chart(ctx, {
-                                    type: 'doughnut',
-                                    data: {
-                                        labels: ['You', 'Them'],
-                                        datasets: [{
-                                            label: '# of Votes',
-                                            data: [55, 25],
-                                            backgroundColor: [
-                                                '#BCE4A6',
-                                                '#8ABBFE',
-                                            ],
-                                            borderWidth: 5,
-                                        }]
-                                    },
-                                    options: {
-                                        legend: {
-                                            position: 'top',
-                                        },
-                                    },
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Hearted</h5>
-                            <p class="card-text">
-                                All liked: x (100%)<br>
-                                You liked: y (share %)<br>
-                                They liked: z (share %)<br>
+                                <hr>
+                                <canvas id="generalChart" class="chart" width="400" height="200"></canvas>
                             </p>
                         </div>
                     </div>
@@ -181,13 +433,20 @@
                                 Their message length: y<br>
                                 Your words per message: z<br>
                                 Their words per message: k<br>
+                                <hr>
+                                <canvas id="messageLengthBar" class="chart" width="400" height="200"></canvas>
                             </p>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
+                            <h5 class="card-title">Hearted</h5>
                             <p class="card-text">
-                                progress1, progress2
+                                All liked: x (100%)<br>
+                                You liked: y (share %)<br>
+                                They liked: z (share %)<br>
+                                <hr>
+                                <canvas id="heartedChart" class="chart" width="400" height="200"></canvas>
                             </p>
                         </div>
                     </div>
@@ -197,36 +456,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Messages over time (months)</h5>
                             <p class="card-text">
-                                <canvas id="myChart" width="400" height="200"></canvas>
-                                <script>
-                                    var ctx = document.getElementById('myChart').getContext('2d');
-                                    var myChart = new Chart(ctx, {
-                                        type: 'line',
-                                        data: {
-                                            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                                            datasets: [{
-                                                label: '# of Votes',
-                                                data: [12, 19, 3, 5, 2, 3],
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 0.2)',
-                                                ],
-                                                borderColor: [
-                                                    'rgba(255, 99, 132, 1)',
-                                                ],
-                                                borderWidth: 1
-                                            }]
-                                        },
-                                        options: {
-                                            scales: {
-                                                yAxes: [{
-                                                    ticks: {
-                                                        beginAtZero: true
-                                                    }
-                                                }]
-                                            }
-                                        }
-                                    });
-                                </script>
+                                <canvas id="messageChart" width="400" height="200"></canvas>
                             </p>
                         </div>
                     </div>
@@ -234,7 +464,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Messages length over time (months)</h5>
                             <p class="card-text">
-                                xyz
+                                <canvas id="messageLengthChart" width="400" height="200"></canvas>
                             </p>
                         </div>
                     </div>
@@ -242,7 +472,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Messaging times</h5>
                             <p class="card-text">
-                                xyz
+                                <canvas id="messageTimesChart" width="400" height="200"></canvas>
                             </p>
                         </div>
                     </div>
@@ -264,7 +494,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Your most used words</h5>
                     <p class="card-text">
-                        sadsds
+                        <canvas id="yourMostUsedWordsChart" width="400" height="200"></canvas>
                     </p>
                 </div>
             </div>
@@ -272,7 +502,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Their most used words</h5>
                     <p class="card-text">
-                        sadsds
+                        <canvas id="theirMostUsedWordsChart" width="400" height="200"></canvas>
                     </p>
                 </div>
             </div>
