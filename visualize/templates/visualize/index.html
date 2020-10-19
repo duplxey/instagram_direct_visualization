@@ -67,6 +67,7 @@
               "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"
             ];
 
+            let allLikes = 0;
             let messageMap = new Map([]);
             let messageAmountMap = new Map([]);
             let messageTimesMap = new Map([]);
@@ -74,6 +75,7 @@
             let messageWordsBufferMap = new Map([]);
             let messageLengthAverageMap = new Map([]);
             let messageWordsAverageMap = new Map([]);
+            let messageLikesMap = new Map([]);
             let emoticonsMap = new Map([
                 [":)", 0],
                 [":(", 0],
@@ -158,6 +160,14 @@
                                 case "23":
                                     return "01";
                             }
+                          }
+
+                          if (message["likes"] != null) {
+                              let likedBy = message["likes"][0]["username"];
+                              if (likedBy != null) {
+                                messageLikesMap.set(likedBy, messageLikesMap.has(likedBy) ? messageLikesMap.get(likedBy) + 1 : 1);
+                                allLikes++;
+                              }
                           }
 
                           messageTimesMap.set(get_offset_time(hour), messageTimesMap.has(get_offset_time(hour)) ? messageTimesMap.get(get_offset_time(hour)) + 1 : 1);
@@ -249,7 +259,6 @@
                       console.log(key + " -> " + value);
                       emoticonsDump.innerHTML += `<li>${key} (${value})</li>`
                   }
-                  console.log(messageWordsAverageMap);
 
                   // Fill in the data
                   let keys = Array.from(messageLengthBufferMap.keys());
@@ -270,6 +279,17 @@
                      document.getElementById("lengthDump2").innerHTML +=
                           `${key}'s average words: ${messageWordsAverageMap.get(key).toFixed(2)}<br>`;
                   }
+
+                  // Hearts dump
+                  document.getElementById("heartedDump").innerHTML = `All likes: ${allLikes} (100%)<br>
+                                                                      Percentage liked: ${(allLikes*100/allMessages).toFixed(2)} (100%)<br>`;
+                  for (let i = 0; i < keys.length; i++) {
+                      let key = keys[i];
+                      document.getElementById("heartedDump").innerHTML +=
+                          `${key}'s likes: ${messageLikesMap.get(key)} (${(messageLikesMap.get(key)*100/allLikes).toFixed(2)}%)<br>`;
+                  }
+
+                  console.log(messageLikesMap);
 
                     {##}
                     {#Your messages: y (share %)<br>#}
@@ -304,9 +324,9 @@
                     var heartedChart = new Chart(heartedCtx, {
                         type: 'doughnut',
                         data: {
-                            labels: ['You', 'Them'],
+                            labels: Array.from(messageLikesMap.keys()),
                             datasets: [{
-                                data: [55, 25],
+                                data: Array.from(messageLikesMap.values()),
                                 backgroundColor: [
                                     color_palette[3],
                                     color_palette[4],
@@ -673,13 +693,9 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Hearted</h5>
-                            <p class="card-text">
-                                All liked: x (100%)<br>
-                                You liked: y (share %)<br>
-                                They liked: z (share %)<br>
-                                <hr>
-                                <canvas id="heartedChart" class="chart" width="400" height="200"></canvas>
-                            </p>
+                            <p class="card-text" id="heartedDump"></p>
+                            <hr>
+                            <canvas id="heartedChart" class="chart" width="400" height="200"></canvas>
                         </div>
                     </div>
                 </div>
